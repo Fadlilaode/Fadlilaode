@@ -4,24 +4,30 @@
 <div class="p-6">
 
     {{-- =================================================================== --}}
-    {{-- [BARU] ALERT JIKA KONEKSI API GAGAL                                --}}
-    {{-- Ditampilkan hanya jika ada session 'error' dari Controller         --}}
+    {{-- ALERT ERROR (Sesi Controller & Validasi Form)                        --}}
     {{-- =================================================================== --}}
-    @if(session('error'))
-    <div class="mb-8 bg-red-50 border border-red-200 rounded-2xl p-6 flex items-center gap-4 shadow-sm animate-fade-in-up relative overflow-hidden">
-        {{-- Aksen Background --}}
+    @if(session('error') || $errors->any())
+    <div class="mb-8 bg-red-50 border border-red-200 rounded-2xl p-6 flex items-start gap-4 shadow-sm relative overflow-hidden">
         <div class="absolute -right-10 -top-10 opacity-10">
             <i class="fa-solid fa-triangle-exclamation text-9xl text-red-500"></i>
         </div>
-
-        {{-- Ikon Utama --}}
         <div class="bg-red-100 rounded-full p-4 text-red-600 shrink-0 z-10">
             <i class="fa-solid fa-plug-circle-xmark text-3xl animate-pulse"></i>
         </div>
-
-        {{-- Konten Teks --}}
         <div class="z-10">
-            <h3 class="text-red-900 font-bold text-xl">Gagal Terhubung ke Model AI!</h3>
+            <h3 class="text-red-900 font-bold text-xl mb-1">Terjadi Kesalahan!</h3>
+            @if(session('error'))
+            <p class="text-red-700 text-sm mb-1">{{ session('error') }}</p>
+            @endif
+
+            {{-- Tangkap error validasi --}}
+            @if($errors->any())
+            <ul class="list-disc list-inside text-red-700 text-sm mt-2 ml-2">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            @endif
         </div>
     </div>
     @endif
@@ -42,7 +48,7 @@
                             <i class="fa-solid fa-flask text-coffee-accent"></i>
                             Simulasi & Validasi
                         </h2>
-                        <p class="text-sm text-gray-500">Uji model AI dan bandingkan dengan label manual.</p>
+                        <p class="text-sm text-gray-500">Uji model dan bandingkan</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <a href="{{ route('admin.uji-sistem.analysis') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-medium rounded-lg transition-colors border border-indigo-100">
